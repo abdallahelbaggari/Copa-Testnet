@@ -37,7 +37,7 @@
 
   --df:'Inter',system-ui,sans-serif;
   --dm:'DM Sans',system-ui,sans-serif;
-  --nav-h:58px;
+  --nav-h:80px;
 
   /* ── GLOW ── */
   --glow-lime:0 0 20px rgba(232,255,0,.25);
@@ -86,17 +86,18 @@ input{font-family:inherit}
   display:flex;align-items:center;justify-content:space-around;
   z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   padding-bottom:env(safe-area-inset-bottom)}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:.12rem;
-  padding:.35rem .4rem;color:var(--t3);transition:all .2s;flex:1;
-  position:relative}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:.2rem;
+  padding:.5rem .25rem;color:var(--t3);transition:all .2s;flex:1;
+  position:relative;min-height:80px;justify-content:center;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .nav-btn.on{color:var(--c1)}
 .nav-btn.on::after{content:'';position:absolute;bottom:-1px;left:25%;right:25%;
   height:2px;background:var(--c1);border-radius:2px 2px 0 0;
   box-shadow:var(--glow-lime)}
-.nav-btn .nav-icon{font-size:1.4rem;transition:transform .2s}
+.nav-btn .nav-icon{font-size:1.85rem;transition:transform .2s;line-height:1;display:block}
 .nav-btn.on .nav-icon{transform:scale(1.15)}
-.nav-btn .nav-lbl{font-size:.52rem;letter-spacing:.05em;font-weight:600;
-  text-transform:uppercase}
+.nav-btn .nav-lbl{font-size:.62rem;letter-spacing:.03em;font-weight:700;
+  text-transform:uppercase;display:block}
 
 /* ── TOAST ── */
 #toast{position:fixed;bottom:calc(var(--nav-h)+16px);left:50%;
@@ -397,7 +398,13 @@ input{font-family:inherit}
       <span id="signin-txt">Sign In with Pi</span>
     </button>
     <div id="lmsg" style="font-family:var(--dm);font-size:.52rem;color:var(--t3);text-align:center;margin-top:.6rem;min-height:.9rem"></div>
-    <div style="font-family:var(--dm);font-size:.44rem;color:var(--t3);text-align:center;margin-top:.75rem;line-height:1.6">Pi SDK Exclusive &#xB7; Testnet &#xB7; sandbox:true</div>
+    <div style="font-family:var(--dm);font-size:.44rem;color:var(--t3);text-align:center;margin-top:.75rem;line-height:1.6">Pi SDK Exclusive &#xB7; Testnet &#xB7; sandbox:false</div>
+    <div style="display:flex;gap:.6rem;justify-content:center;margin-top:.85rem;flex-wrap:wrap">
+      <a href="/privacy" style="font-family:var(--dm);font-size:.52rem;color:rgba(232,255,0,.6);text-decoration:underline;text-underline-offset:3px;touch-action:manipulation">Privacy Policy</a>
+      <span style="color:var(--t3);font-size:.52rem">&middot;</span>
+      <a href="/terms" style="font-family:var(--dm);font-size:.52rem;color:rgba(232,255,0,.6);text-decoration:underline;text-underline-offset:3px;touch-action:manipulation">Terms of Service</a>
+    </div>
+    <div style="font-family:var(--dm);font-size:.42rem;color:var(--t3);text-align:center;margin-top:.5rem">&copy; 2026 Copa &bull; Developed by Abdullahi Bashir Abubakar</div>
   </div>
 </div>
 <div id="app" style="display:none">
@@ -410,7 +417,7 @@ input{font-family:inherit}
     <div class="scr-hdr">
       <div>
         <div class="scr-hdr-title">⚽ COPA.pi</div>
-        <div class="scr-hdr-sub">copa.pi · TESTNET</div>
+        <div class="scr-hdr-sub">copa.pi · Football Super App on Pi</div>
       </div>
       <div id="user-chip" style="font-size:.52rem;color:var(--c1)"></div>
     </div>
@@ -552,7 +559,7 @@ input{font-family:inherit}
     <div class="scr-hdr" style="flex-shrink:0">
       <div>
         <div class="scr-hdr-title">&#x26A1; COPA+</div>
-        <div class="scr-hdr-sub">Pi Payments &#xB7; Testnet &#xB7; sandbox:true</div>
+        <div class="scr-hdr-sub">Pi Payments &#xB7; Testnet &#xB7; sandbox:false</div>
       </div>
       <div id="more-user" style="font-size:.55rem;color:var(--c1);font-weight:700"></div>
     </div>
@@ -738,9 +745,17 @@ input{font-family:inherit}
           <div>&#x1F4E6; Version 1.0.0</div>
           <div>&#x1F510; Pi SDK Exclusive Authentication</div>
           <div>&#x1F48E; Pi Exclusive Transactions</div>
-          <div>&#x1F30D; Testnet &#xB7; sandbox:true</div>
+          <div>&#x1F30D; Testnet &#xB7; sandbox:false</div>
           <div style="margin-top:.3rem;color:var(--c1);font-weight:700">copa-pi-testnet.pages.dev</div>
         </div>
+        <!-- Privacy & Terms -->
+        <div style="display:flex;gap:.75rem;justify-content:center;padding:.65rem 0 .3rem;flex-wrap:wrap">
+          <a href="/privacy" style="font-family:var(--dm);font-size:.6rem;color:var(--c1);text-decoration:underline;text-underline-offset:3px;padding:.3rem .1rem;touch-action:manipulation">Privacy Policy</a>
+          <span style="color:var(--t3);font-size:.6rem;line-height:2">&middot;</span>
+          <a href="/terms" style="font-family:var(--dm);font-size:.6rem;color:var(--c1);text-decoration:underline;text-underline-offset:3px;padding:.3rem .1rem;touch-action:manipulation">Terms of Service</a>
+        </div>
+        <!-- Copyright -->
+        <div style="font-family:var(--dm);font-size:.5rem;color:var(--t3);text-align:center;padding:.1rem 0 1.5rem">&copy; 2026 Copa &bull; Developed by Abdullahi Bashir Abubakar</div>
       </div>
 
     </div><!-- /scr-scroll -->
@@ -773,6 +788,21 @@ input{font-family:inherit}
   </button>
 </nav>
 
+
+  <!-- Legal Panel -->
+  <div id="legal-panel" style="display:none;position:fixed;inset:0;background:var(--bg1);
+    z-index:200;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)">
+    <div style="background:rgba(14,14,14,.97);border-bottom:1px solid var(--bd);
+      padding:.6rem .85rem;display:flex;align-items:center;gap:.5rem;
+      position:sticky;top:0;z-index:5">
+      <button onclick="closeLegal()" style="color:var(--c1);font-family:var(--dm);
+        font-size:.7rem;font-weight:700;cursor:pointer;padding:.2rem .1rem;
+        touch-action:manipulation">&#x2190; Back</button>
+      <div id="legal-title" style="font-family:var(--dm);font-size:.6rem;
+        color:var(--t3);flex:1;text-align:center"></div>
+    </div>
+    <div id="legal-body" style="padding:0"></div>
+  </div>
 </div><!-- /app -->
 <div id="toast"></div>
 
@@ -1830,6 +1860,42 @@ function imgCloseLightbox() {
   if (lb) lb.classList.remove('open');
 }
 
+
+/* ── LEGAL PAGES ── */
+function openLegal(page) {
+  var panel = document.getElementById('legal-panel');
+  var body  = document.getElementById('legal-body');
+  var title = document.getElementById('legal-title');
+  if (!panel || !body) return;
+
+  if (title) title.textContent = page === 'privacy' ? 'Privacy Policy' : 'Terms of Service';
+  body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;'
+    + 'padding:2rem"><div class="spin"></div></div>';
+  panel.style.display = 'block';
+  panel.scrollTop = 0;
+
+  fetch('/' + page)
+    .then(function(r){ return r.text(); })
+    .then(function(html){
+      /* Strip outer html/head/body tags, keep content */
+      var match = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+      var content = match ? match[1] : html;
+      /* Remove topbar nav (already have back button) */
+      content = content.replace(/<div class="topbar"[\s\S]*?<\/div>\s*/i, '');
+      body.innerHTML = content;
+    })
+    .catch(function(){
+      body.innerHTML = '<div style="padding:2rem;text-align:center;'
+        + 'font-family:var(--dm);font-size:.65rem;color:var(--t3)">'
+        + 'Could not load page.<br><br>'
+        + '<a href="/' + page + '" style="color:var(--c1)">Open directly</a></div>';
+    });
+}
+
+function closeLegal() {
+  var panel = document.getElementById('legal-panel');
+  if (panel) { panel.style.display = 'none'; }
+}
 </script>
 </body>
 </html>
