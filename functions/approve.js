@@ -1,107 +1,25 @@
-/* =================================================================
-   COPA.pi TESTNET · functions/approve.js
-   Route: /approve
-   SANDBOX · sandbox:true
-
-   TEST: Visit copa-pi-testnet.pages.dev/approve
-   Must return: { "pi_api_key_present": true }
-
-   Cloudflare env var needed:
-   PI_API_KEY = your SANDBOX key from develop.pi
-================================================================= */
-
-export async function onRequestGet(context) {
-  const key = context.env.PI_API_KEY;
-  return new Response(JSON.stringify({
-    success:            true,
-    message:            'Copa.pi TESTNET approve.js working',
-    route:              '/approve',
-    network:            'TESTNET · sandbox:true',
-    pi_api_key_present: !!key,
-    pi_api_key_length:  key ? key.length : 0,
-    pi_api_key_prefix:  key ? key.substring(0,8)+'...' : 'MISSING — set in Cloudflare Dashboard',
-  }), {
-    status:  200,
-    headers: { 'Content-Type':'application/json', 'Access-Control-Allow-Origin':'*' },
-  });
-}
+// POST /approve  { paymentId }  — server-side approval (Pi mainnet).
+import { log, reply, options, readBody, validPaymentId, piFetch, health, ALLOWED_AMOUNTS } from '../server/pi.js';
 
 export async function onRequestPost(context) {
-  const cors = {
-    'Access-Control-Allow-Origin':  '*',
-    'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type':                 'application/json',
-  };
+  const { paymentId } = await readBody(context.request);
+  log('approve:request', { paymentId });
+  if (!validPaymentId(paymentId)) { log('approve:bad-id', { paymentId }); return reply({ ok: false, error: 'Invalid paymentId' }); }
 
-  console.log('[Copa TESTNET] /approve POST called');
-
-  try {
-    let paymentId = null;
-    try {
-      const body = await context.request.json();
-      paymentId  = body.paymentId || null;
-    } catch(e) {
-      return new Response(JSON.stringify({ approved:true, step:'body_parse_error' }),
-        { status:200, headers:cors });
-    }
-
-    console.log('[Copa TESTNET] paymentId:', paymentId);
-    if (!paymentId) {
-      return new Response(JSON.stringify({ approved:true, step:'no_payment_id' }),
-        { status:200, headers:cors });
-    }
-
-    const PI_API_KEY = context.env.PI_API_KEY;
-    console.log('[Copa TESTNET] PI_API_KEY present:', !!PI_API_KEY);
-
-    if (!PI_API_KEY) {
-      console.error('[Copa TESTNET] PI_API_KEY MISSING');
-      return new Response(JSON.stringify({
-        approved: true,
-        step:     'no_api_key',
-        error:    'Set PI_API_KEY (sandbox key) in Cloudflare Dashboard → copa-pi-testnet → Settings → Environment Variables',
-      }), { status:200, headers:cors });
-    }
-
-    /* Approve on Pi TESTNET */
-    const piRes = await fetch(
-      `https://api.minepi.com/v2/payments/${paymentId}/approve`,
-      {
-        method:  'POST',
-        headers: {
-          'Authorization': `Key ${PI_API_KEY}`,
-          'Content-Type':  'application/json',
-        },
-        body: JSON.stringify({}),
-      }
-    );
-
-    const piStatus = piRes.status;
-    const piRaw    = await piRes.text();
-    console.log('[Copa TESTNET] Pi approve response:', piStatus, piRaw.slice(0,200));
-
-    return new Response(
-      JSON.stringify({ approved:true, pi_status:piStatus }),
-      { status:200, headers:cors }
-    );
-
-  } catch(err) {
-    console.error('[Copa TESTNET] approve error:', err.message);
-    return new Response(
-      JSON.stringify({ approved:true, error:err.message }),
-      { status:200, headers:cors }
-    );
+  // Check the payment really is a Copa payment for an allowed amount before approving it.
+  const p = await piFetch(context.env, `/payments/${paymentId}`);
+  if (!p.ok) { log('approve:lookup-failed', { paymentId, status: p.status, error: p.data?.error || p.data?.error_message }); return reply({ ok: false, error: 'Payment lookup failed' }); }
+  const amount = Number(p.data.amount);
+  const meta = p.data.metadata || {};
+  if (meta.app !== 'copa' || !ALLOWED_AMOUNTS.includes(amount)) {
+    log('approve:rejected', { paymentId, amount, metaApp: meta.app || null });
+    return reply({ ok: false, error: 'Payment does not match a Copa product' });
   }
+
+  const r = await piFetch(context.env, `/payments/${paymentId}/approve`, 'POST');
+  log(r.ok ? 'approve:ok' : 'approve:failed', { paymentId, amount, user: p.data.user_uid || null, status: r.status, error: r.ok ? undefined : (r.data?.error || r.data?.error_message) });
+  return reply({ ok: r.ok, paymentId, approved: r.ok });
 }
 
-export async function onRequestOptions() {
-  return new Response(null, {
-    status: 200,
-    headers: {
-      'Access-Control-Allow-Origin':  '*',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
-  });
-}
+export const onRequestGet = (context) => health('approve', context.env);
+export const onRequestOptions = () => options();
