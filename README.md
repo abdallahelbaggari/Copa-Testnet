@@ -1,4 +1,4 @@
-# Copa Testnet — Every Cup. Every Upset. Every Champion.
+# Copa Testnet — Football. Live. Connected.
 
 > **TESTNET repo** (Pi sandbox). Its own Cloudflare project with the **testnet** app's `PI_API_KEY` and validation key. Never point the mainnet Cloudflare project here.
 
